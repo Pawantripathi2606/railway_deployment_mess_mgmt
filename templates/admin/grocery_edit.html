@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block title %}Edit Grocery - Mess Management{% endblock %}
+{% block content %}
+<div class="page-header">
+    <h1>Edit Grocery Item</h1>
+    <a href="{% url 'grocery_list' %}" class="btn btn-secondary">← Back</a>
+</div>
+
+<div class="form-container">
+    <div class="card">
+        <div class="card-body">
+            <form method="post" class="form">
+                {% csrf_token %}
+                {% for field in form %}
+                <div class="form-group">
+                    <label>{{ field.label }}</label>
+                    {{ field }}
+                    {% if field.errors %}
+                    <span class="error">{{ field.errors.0 }}</span>
+                    {% endif %}
+                </div>
+                {% endfor %}
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Update Grocery</button>
+                    <a href="{% url 'grocery_list' %}" class="btn btn-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

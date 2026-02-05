@@ -1,0 +1,188 @@
+{% extends 'base.html' %}
+{% block title %}Make Payment - Mess Management{% endblock %}
+{% block content %}
+<div class="page-header">
+    <h1>Submit Payment</h1>
+    <a href="{% url 'user_dashboard' %}" class="btn btn-secondary">← Back to Dashboard</a>
+</div>
+
+<div class="card" style="margin-bottom: 30px; border: 2px solid #4CAF50;">
+    <div class="card-header" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+        <h2 style="margin: 0;">💳 Payment Methods</h2>
+    </div>
+    <div class="card-body">
+        <div class="payment-info" style="display: flex; flex-wrap: wrap; gap: 30px; align-items: start;">
+            <!-- UPI QR Code Section -->
+            <div class="qr-section" style="flex: 1; min-width: 280px; text-align: center;">
+                <h3 style="color: #667eea; margin-bottom: 15px;">📱 Scan QR Code</h3>
+                {% if mess_settings and mess_settings.upi_qr_code %}
+                <div
+                    style="background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); display: inline-block;">
+                    <img src="{{ mess_settings.upi_qr_code.url }}" alt="UPI QR Code"
+                        style="max-width: 250px; border-radius: 8px; display: block;">
+                </div>
+                <p style="margin-top: 15px; color: #666; font-size: 14px;">Open any UPI app and scan</p>
+                {% else %}
+                <div style="background: #fff3cd; padding: 20px; border-radius: 10px; border-left: 4px solid #ffc107;">
+                    <p style="color: #856404; margin: 0;">❌ QR Code not configured yet</p>
+                    <p style="color: #856404; margin: 10px 0 0 0; font-size: 14px;">Admin needs to upload QR code in
+                        settings</p>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- UPI ID Section -->
+            <div class="upi-id-section" style="flex: 1; min-width: 280px;">
+                <h3 style="color: #667eea; margin-bottom: 15px;">💰 Pay via UPI ID</h3>
+                <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; border-left: 4px solid #4CAF50;">
+                    <label style="display: block; font-weight: 600; margin-bottom: 10px; color: #333;">UPI ID:</label>
+                    {% if mess_settings and mess_settings.admin_upi_id %}
+                    <div style="display: flex; gap: 10px; align-items: center;">
+                        <input type="text" value="{{ mess_settings.admin_upi_id }}" id="upi-id-input" readonly
+                            style="flex: 1; padding: 12px; font-size: 16px; border: 2px solid #ddd; border-radius: 6px; font-family: monospace; background: white;">
+                        <button type="button" onclick="copyUPI()" class="btn btn-primary" style="padding: 12px 20px;">
+                            📋 Copy
+                        </button>
+                    </div>
+                    <p style="margin-top: 15px; color: #28a745; font-size: 14px; display: none;" id="copy-success">✅
+                        Copied to clipboard!</p>
+                    {% else %}
+                    <div style="background: #fff3cd; padding: 15px; border-radius: 8px; border: 2px dashed #ffc107;">
+                        <p style="color: #856404; margin: 0; font-weight: 600;">❌ UPI ID not configured</p>
+                        <p style="color: #856404; margin: 10px 0 0 0; font-size: 14px;">Please contact admin to set up
+                            UPI payment details</p>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <div
+                    style="margin-top: 20px; padding: 15px; background: #fff3cd; border-radius: 8px; border-left: 4px solid #ffc107;">
+                    <h4 style="margin: 0 0 10px 0; color: #856404;">📝 Instructions:</h4>
+                    <ol style="margin: 0; padding-left: 20px; color: #856404;">
+                        {% if mess_settings and mess_settings.admin_upi_id %}
+                        <li>Scan QR code OR copy UPI ID</li>
+                        <li>Complete payment via any UPI app</li>
+                        {% else %}
+                        <li>Wait for admin to configure payment details</li>
+                        <li>Or contact admin for payment information</li>
+                        {% endif %}
+                        <li>Fill the form below with transaction details</li>
+                        <li>Upload payment screenshot (optional)</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function copyUPI() {
+        const input = document.getElementById('upi-id-input');
+        input.select();
+        input.setSelectionRange(0, 99999); // For mobile
+        document.execCommand('copy');
+
+        // Show success message
+        const success = document.getElementById('copy-success');
+        success.style.display = 'block';
+        setTimeout(() => {
+            success.style.display = 'none';
+        }, 2000);
+    }
+</script>
+
+<div class="form-container">
+    <div class="card">
+        <div class="card-header">
+            <h2>Submit Payment Proof</h2>
+        </div>
+        <div class="card-body">
+            <form method="post" enctype="multipart/form-data" class="form">
+                {% csrf_token %}
+
+                <div class="alert alert-info">Current payment amount: <strong>₹{{ payment.amount|floatformat:2
+                        }}</strong></div>
+
+                <div class="form-group">
+                    <label for="id_transaction_id">Transaction ID *</label>
+                    {{ form.transaction_id }}
+                    {% if form.transaction_id.errors %}
+                    <span class="error">{{ form.transaction_id.errors.0 }}</span>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label for="id_proof_image">Payment Screenshot (optional)</label>
+                    {{ form.proof_image }}
+                    {% if form.proof_image.errors %}
+                    <span class="error">{{ form.proof_image.errors.0 }}</span>
+                    {% endif %}
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Submit Payment</button>
+                    <a href="{% url 'user_dashboard' %}" class="btn btn-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Dark mode overrides for payment page */
+    body.dark-mode .payment-info h3 {
+        color: #b794f4 !important;
+    }
+
+    body.dark-mode .upi-id-section label {
+        color: #e2e8f0 !important;
+    }
+
+    body.dark-mode .upi-id-section input {
+        background: #1a202c !important;
+        color: #e2e8f0 !important;
+        border-color: #4a5568 !important;
+    }
+
+    body.dark-mode .qr-section p {
+        color: #a0aec0 !important;
+    }
+
+    body.dark-mode .alert-info {
+        background: #2d3748 !important;
+        border-color: #4a5568 !important;
+        color: #e2e8f0 !important;
+    }
+
+    body.dark-mode .form-group label {
+        color: #e2e8f0 !important;
+    }
+
+    body.dark-mode .card-header h2 {
+        color: white !important;
+    }
+
+    body.dark-mode ol li,
+    body.dark-mode .payment-info h4 {
+        color: #e2e8f0 !important;
+    }
+
+    body.dark-mode .payment-info div[style*="background: #fff3cd"] {
+        background: #2d3748 !important;
+        border-left-color: #f59e0b !important;
+    }
+
+    body.dark-mode .payment-info div[style*="background: #f8f9fa"] {
+        background: #1a202c !important;
+        border-left-color: #10b981 !important;
+    }
+
+    body.dark-mode .qr-section div[style*="background: white"] {
+        background: #374151 !important;
+    }
+
+    body.dark-mode #copy-success {
+        color: #10b981 !important;
+    }
+</style>
+{% endblock %}

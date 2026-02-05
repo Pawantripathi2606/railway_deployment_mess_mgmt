@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block title %}User Management - Mess Management{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>User Management</h1>
+    <a href="{% url 'user_create' %}" class="btn btn-primary">+ Add New User</a>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        {% if users %}
+        <div class="table-responsive">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Room No</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for profile in users %}
+                    <tr>
+                        <td>{{ profile.user.get_full_name }}</td>
+                        <td>{{ profile.user.username }}</td>
+                        <td>{{ profile.user.email }}</td>
+                        <td>{{ profile.phone }}</td>
+                        <td>{{ profile.room_no }}</td>
+                        <td>
+                            {% if profile.is_active %}
+                            <span class="badge badge-success">Active</span>
+                            {% else %}
+                            <span class="badge badge-danger">Inactive</span>
+                            {% endif %}
+                        </td>
+                        <td class="actions">
+                            <a href="{% url 'user_edit' profile.id %}" class="btn btn-sm btn-secondary">Edit</a>
+                            <a href="{% url 'user_delete' profile.id %}" class="btn btn-sm btn-danger">Delete</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p class="empty-state">No users found. <a href="{% url 'user_create' %}">Add your first user</a></p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

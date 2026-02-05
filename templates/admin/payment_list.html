@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% block title %}Payments - Mess Management{% endblock %}
+{% block content %}
+<div class="page-header">
+    <h1>Payment Management</h1>
+    <div>
+        <a href="{% url 'export_payments_excel' %}?month={{ selected_month }}" class="btn btn-success"
+            style="margin-right: 10px;">📊 Export to Excel</a>
+        <button onclick="window.print()" class="btn btn-secondary print-btn" style="margin-right: 10px;">🖨️
+            Print</button>
+        <a href="{% url 'payment_create' %}" class="btn btn-primary">+ Add Payment</a>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <div class="filter-group">
+            <label>Filter by Month:</label>
+            <select onchange="window.location.href='?month='+this.value" class="form-control">
+                {% for month in months %}
+                <option value="{{ month }}" {% if month == selected_month %}selected{% endif %}>{{ month }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+    <div class="card-body">
+        {% if payments %}
+        <div class="table-responsive">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>User</th>
+                        <th>Month</th>
+                        <th>Amount</th>
+                        <th>Status</th>
+                        <th>Transaction ID</th>
+                        <th>Paid Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for payment in payments %}
+                    <tr>
+                        <td>{{ payment.user.get_full_name }}</td>
+                        <td>{{ payment.month_year }}</td>
+                        <td>₹{{ payment.amount|floatformat:2 }}</td>
+                        <td><span class="badge badge-{{ payment.status }}">{{ payment.get_status_display }}</span></td>
+                        <td>{{ payment.transaction_id|default:"N/A" }}</td>
+                        <td>{{ payment.paid_date|date:"d M Y" }}</td>
+                        <td class="actions">
+                            {% if payment.status == 'pending' or payment.status == 'partial' %}
+                            <a href="{% url 'send_payment_reminder' payment.id %}" class="btn btn-sm btn-warning"
+                                title="Send payment reminder">📧 Remind</a>
+                            {% endif %}
+                            <a href="{% url 'payment_edit' payment.id %}" class="btn btn-sm btn-secondary">Edit</a>
+                            <a href="{% url 'payment_delete' payment.id %}" class="btn btn-sm btn-danger">Delete</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p class="empty-state">No payments found for this month.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

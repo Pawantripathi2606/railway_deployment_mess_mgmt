@@ -1,0 +1,131 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Mess Management{% endblock %}</title>
+
+    <!-- Favicon - Comprehensive configuration for all browsers -->
+    <!-- Primary favicon (ICO format for maximum compatibility) -->
+    <link rel="icon" href="{% static 'favicon.ico' %}?v=4.0" type="image/x-icon">
+    <link rel="shortcut icon" href="{% static 'favicon.ico' %}?v=4.0" type="image/x-icon">
+
+    <!-- PNG fallbacks for modern browsers -->
+    <link rel="icon" type="image/png" sizes="32x32" href="{% static 'favicon.png' %}?v=4.0">
+    <link rel="icon" type="image/png" sizes="16x16" href="{% static 'favicon.png' %}?v=4.0">
+
+    <!-- Apple Touch Icon -->
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'favicon.png' %}?v=4.0">
+
+    <!-- Microsoft Tiles -->
+    <meta name="msapplication-TileImage" content="{% static 'favicon.png' %}?v=4.0">
+    <meta name="msapplication-TileColor" content="#ff6b35">
+
+    <!-- Web App Manifest for PWA support -->
+    <link rel="manifest" href="{% static 'site.webmanifest' %}">
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}?v=2.0">
+    <link rel="stylesheet" href="{% static 'css/dark-mode.css' %}?v=2.0">
+    <link rel="stylesheet" href="{% static 'css/print.css' %}?v=2.0" media="print">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body {% if user.is_authenticated %}data-user-dark-mode="{{ user.profile.dark_mode|lower }}" {% endif %}>
+
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <h2>🍽️ Mess Manager</h2>
+            </div>
+
+            {% if user.is_authenticated %}
+            <!-- Mobile Menu Toggle -->
+            <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Toggle navigation">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+
+            <div class="nav-menu" id="navMenu">
+                <!-- Theme Toggle (visible on all screens) -->
+                <button class="theme-toggle" title="Toggle Dark Mode (Ctrl+Shift+D)">
+                    <span class="theme-toggle-icon" id="theme-icon">☀️</span>
+                </button>
+
+                <!-- Navigation Links -->
+                {% if user.profile.role == 'admin' %}
+                <a href="{% url 'admin_dashboard' %}" class="nav-link">Dashboard</a>
+                <a href="{% url 'user_list' %}" class="nav-link">Users</a>
+                <a href="{% url 'payment_list' %}" class="nav-link">Payments</a>
+                <a href="{% url 'grocery_list' %}" class="nav-link">Groceries</a>
+                <a href="{% url 'admin_messages' %}" class="nav-link">Messages</a>
+                <a href="{% url 'meal_calendar' %}" class="nav-link">Meals</a>
+                <a href="{% url 'monthly_report' %}" class="nav-link">Reports</a>
+                {% else %}
+                <a href="{% url 'user_dashboard' %}" class="nav-link">Dashboard</a>
+                <a href="{% url 'user_payment' %}" class="nav-link">Payments</a>
+                <a href="{% url 'transparent_data' %}" class="nav-link">Expenses</a>
+                <a href="{% url 'user_messages_list' %}" class="nav-link">Messages</a>
+                <a href="{% url 'user_meal_calendar' %}" class="nav-link">Meals</a>
+                {% endif %}
+
+                <!-- User Menu -->
+                <div class="user-menu">
+                    {% if user.profile.profile_picture %}
+                    <img src="{{ user.profile.profile_picture.url }}" alt="Profile" class="profile-pic-small">
+                    {% else %}
+                    <div class="profile-pic-placeholder">{{ user.first_name.0 }}{{ user.last_name.0 }}</div>
+                    {% endif %}
+                    <div class="user-dropdown">
+                        <a href="{% url 'profile_settings' %}">👤 Profile</a>
+                        {% if user.profile.role == 'admin' %}
+                        <a href="{% url 'admin_settings' %}">⚙️ Settings</a>
+                        {% else %}
+                        <a href="{% url 'user_settings' %}">⚙️ Settings</a>
+                        {% endif %}
+                        <a href="{% url 'logout' %}">🚪 Logout</a>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </nav>
+
+    <!-- Messages -->
+    {% if messages %}
+    <div class="messages-container">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">
+            {{ message }}
+            <button class="close-btn" onclick="this.parentElement.remove()">×</button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            {% block content %}
+            {% endblock %}
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 Mess Management System. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="{% static 'js/main.js' %}"></script>
+    <script src="{% static 'js/theme-toggle.js' %}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+
+</html>

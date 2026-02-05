@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block title %}Fixed Expenses - Mess Management{% endblock %}
+{% block content %}
+<div class="page-header">
+    <h1>Fixed Expense Management</h1><a href="{% url 'expense_create' %}" class="btn btn-primary">+ Add Fixed
+        Expense</a>
+</div>
+<div class="card">
+    <div class="card-body">
+        {% if expenses %}
+        <div class="table-responsive">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Month</th>
+                        <th>Kitchen Rent</th>
+                        <th>Maid Salary</th>
+                        <th>Gas Cylinder</th>
+                        <th>Other</th>
+                        <th>Total</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for exp in expenses %}
+                    <tr>
+                        <td>{{ exp.month_year }}</td>
+                        <td>₹{{ exp.kitchen_rent|floatformat:2 }}</td>
+                        <td>₹{{ exp.maid_salary|floatformat:2 }}</td>
+                        <td>₹{{ exp.gas_cylinder|floatformat:2 }}</td>
+                        <td>₹{{ exp.other_expenses|floatformat:2 }}</td>
+                        <td><strong>₹{{ exp.total_fixed_expense|floatformat:2 }}</strong></td>
+                        <td class="actions"><a href="{% url 'expense_edit' exp.id %}"
+                                class="btn btn-sm btn-secondary">Edit</a><a href="{% url 'expense_delete' exp.id %}"
+                                class="btn btn-sm btn-danger">Delete</a></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}<p class="empty-state">No fixed expenses found.</p>{% endif %}
+    </div>
+</div>
+{% endblock %}

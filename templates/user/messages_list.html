@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% block title %}My Messages - Mess Management{% endblock %}
+{% block content %}
+<div class="page-header">
+    <h1>My Messages</h1>
+    <a href="{% url 'user_dashboard' %}" class="btn btn-secondary">← Back to Dashboard</a>
+    <a href="{% url 'user_send_message' %}" class="btn btn-primary">✉️ Send New Message</a>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        {% if user_messages %}
+        <div class="messages-list">
+            {% for msg in user_messages %}
+            <div class="message-item message-{{ msg.status }}">
+                <div class="message-header">
+                    <strong>{{ msg.subject }}</strong>
+                    <span class="message-date">📅 {{ msg.created_at|date:"d M Y, h:i A" }}</span>
+                </div>
+
+                <div class="message-section">
+                    <p><strong>Your Message:</strong></p>
+                    <div class="message-body">{{ msg.message }}</div>
+                </div>
+
+                {% if msg.admin_reply %}
+                <div class="admin-reply">
+                    <p><strong>Admin Reply:</strong> <small class="text-muted">({{ msg.replied_at|date:"d M Y, h:i A"
+                            }})</small></p>
+                    <div class="reply-body">{{ msg.admin_reply }}</div>
+                </div>
+
+                {% if msg.user_reply %}
+                <div class="user-reply-section">
+                    <p><strong>Your Reply:</strong> <small class="text-muted">({{ msg.user_replied_at|date:"d M Y, h:i
+                            A" }})</small></p>
+                    <div class="reply-body">{{ msg.user_reply }}</div>
+                </div>
+                {% else %}
+                <div class="message-actions">
+                    <a href="{% url 'user_message_reply' msg.id %}" class="btn btn-sm btn-info">💬 Reply to Admin</a>
+                </div>
+                {% endif %}
+                {% endif %}
+
+                <div class="message-footer">
+                    <span class="badge badge-{{ msg.status }}">{{ msg.get_status_display }}</span>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p class="empty-state">No messages found. <a href="{% url 'user_send_message' %}">Send a message to admin</a>
+        </p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

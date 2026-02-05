@@ -1,0 +1,138 @@
+{% extends 'base.html' %}
+{% block title %}Transparent Mess Data - Mess Management{% endblock %}
+{% block content %}
+<div class="page-header">
+    <h1>Transparent Mess Data</h1>
+    <p class="subtitle">View all mess operations and expenses</p>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <div class="filter-group">
+            <label>Month:</label>
+            <select onchange="window.location.href='?month='+this.value" class="form-control">
+                {% for month in months %}
+                <option value="{{ month }}" {% if month == selected_month %}selected{% endif %}>{{ month }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+</div>
+
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-icon">🛒</div>
+        <div class="stat-content">
+            <h3>₹{{ total_grocery|floatformat:2 }}</h3>
+            <p>Grocery Expenses</p>
+        </div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-icon">📝</div>
+        <div class="stat-content">
+            <h3>₹{% if fixed_expense %}{{ fixed_expense.total_fixed_expense|floatformat:2 }}{% else %}0.00{% endif %}
+            </h3>
+            <p>Fixed Expenses</p>
+        </div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-icon">💰</div>
+        <div class="stat-content">
+            <h3>₹{{ total_collected|floatformat:2 }}</h3>
+            <p>Payments Collected</p>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h2>Grocery Items</h2>
+    </div>
+    <div class="card-body">
+        {% if groceries %}
+        <div class="table-responsive">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Item</th>
+                        <th>Category</th>
+                        <th>Quantity</th>
+                        <th>Price</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in groceries %}
+                    <tr>
+                        <td>{{ item.item_name }}</td>
+                        <td>{{ item.get_category_display }}</td>
+                        <td>{{ item.quantity }}</td>
+                        <td>₹{{ item.price|floatformat:2 }}</td>
+                        <td>{{ item.purchase_date|date:"d M Y" }}</td>
+                    </tr>
+                    {% endfor %}
+                    <tr class="total-row">
+                        <td colspan="3"><strong>Total</strong></td>
+                        <td colspan="2"><strong>₹{{ total_grocery|floatformat:2 }}</strong></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        {% else %}<p class="empty-state">No groceries recorded for this month.</p>{% endif %}
+    </div>
+</div>
+
+{% if fixed_expense %}
+<div class="card">
+    <div class="card-header">
+        <h2>Fixed Expenses</h2>
+    </div>
+    <div class="card-body">
+        <div class="expense-details">
+            <div class="detail-row"><span>Kitchen Rent:</span><strong>₹{{ fixed_expense.kitchen_rent|floatformat:2
+                    }}</strong></div>
+            <div class="detail-row"><span>Maid Salary:</span><strong>₹{{ fixed_expense.maid_salary|floatformat:2
+                    }}</strong></div>
+            <div class="detail-row"><span>Gas Cylinder:</span><strong>₹{{ fixed_expense.gas_cylinder|floatformat:2
+                    }}</strong></div>
+            <div class="detail-row"><span>Other Expenses:</span><strong>₹{{ fixed_expense.other_expenses|floatformat:2
+                    }}</strong></div>
+            <div class="detail-row total"><span>Total Fixed:</span><strong>₹{{
+                    fixed_expense.total_fixed_expense|floatformat:2 }}</strong></div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<div class="card">
+    <div class="card-header">
+        <h2>All Payments</h2>
+    </div>
+    <div class="card-body">
+        {% if payments %}
+        <div class="table-responsive">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>User</th>
+                        <th>Amount</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for payment in payments %}
+                    <tr>
+                        <td>{{ payment.user.get_full_name }}</td>
+                        <td>₹{{ payment.amount|floatformat:2 }}</td>
+                        <td><span class="badge badge-{{ payment.status }}">{{ payment.get_status_display }}</span></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}<p class="empty-state">No payments recorded for this month.</p>{% endif %}
+    </div>
+</div>
+{% endblock %}

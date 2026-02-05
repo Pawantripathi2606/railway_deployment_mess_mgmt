@@ -1,0 +1,349 @@
+{% extends 'base.html' %}
+{% block title %}Admin Settings - Mess Management{% endblock %}
+{% block content %}
+<div class="page-header">
+    <h1>⚙️ System Settings</h1>
+    <a href="{% url 'admin_dashboard' %}" class="btn btn-secondary">← Back to Admin Dashboard</a>
+</div>
+
+<div class="admin-settings-container">
+    <div class="settings-sidebar">
+        <button class="sidebar-item active" data-section="general">🏢 General</button>
+        <button class="sidebar-item" data-section="payment">💰 Payment</button>
+        <button class="sidebar-item" data-section="users">👥 Users</button>
+        <button class="sidebar-item" data-section="reminders">🔔 Reminders</button>
+        <button class="sidebar-item" data-section="reports">📊 Reports</button>
+        <button class="sidebar-item" data-section="security">🔒 Security</button>
+        <button class="sidebar-item" data-section="display">🎨 Display</button>
+        <button class="sidebar-item" data-section="system">⚙️ System</button>
+    </div>
+
+    <div class="settings-main">
+        <!-- General Settings -->
+        <div class="settings-section active" id="general-section">
+            <h2>General Information</h2>
+            <p class="section-description">Basic mess information and contact details</p>
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <input type="hidden" name="section" value="general">
+                {{ general_form.as_p }}
+                <button type="submit" class="btn btn-primary">💾 Save General Settings</button>
+            </form>
+        </div>
+
+        <!-- Payment Settings -->
+        <div class="settings-section" id="payment-section">
+            <h2>Payment Configuration</h2>
+            <p class="section-description">Configure payment settings, fees, and UPI details</p>
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <input type="hidden" name="section" value="payment">
+                {{ payment_form.as_p }}
+                <button type="submit" class="btn btn-primary">💾 Save Payment Settings</button>
+            </form>
+        </div>
+
+        <!-- User Management Settings -->
+        <div class="settings-section" id="users-section">
+            <h2>User Management</h2>
+            <p class="section-description">Control user registration and management rules</p>
+            <form method="post">
+                {% csrf_token %}
+                <input type="hidden" name="section" value="users">
+                {{ users_form.as_p }}
+                <button type="submit" class="btn btn-primary">💾 Save User Settings</button>
+            </form>
+        </div>
+
+        <!-- Reminder Settings -->
+        <div class="settings-section" id="reminders-section">
+            <h2>Payment Reminders</h2>
+            <p class="section-description">Configure automatic payment reminder schedule</p>
+            <form method="post">
+                {% csrf_token %}
+                <input type="hidden" name="section" value="reminders">
+                {{ reminders_form.as_p }}
+                <button type="submit" class="btn btn-primary">💾 Save Reminder Settings</button>
+            </form>
+        </div>
+
+        <!-- Report Settings -->
+        <div class="settings-section" id="reports-section">
+            <h2>Report Configuration</h2>
+            <p class="section-description">Configure automatic report generation and distribution</p>
+            <form method="post">
+                {% csrf_token %}
+                <input type="hidden" name="section" value="reports">
+                {{ reports_form.as_p }}
+                <button type="submit" class="btn btn-primary">💾 Save Report Settings</button>
+            </form>
+        </div>
+
+        <!-- Security Settings -->
+        <div class="settings-section" id="security-section">
+            <h2>Security Settings</h2>
+            <p class="section-description">Configure password policies and session management</p>
+            <form method="post">
+                {% csrf_token %}
+                <input type="hidden" name="section" value="security">
+                {{ security_form.as_p }}
+                <button type="submit" class="btn btn-primary">💾 Save Security Settings</button>
+            </form>
+        </div>
+
+        <!-- Display Settings -->
+        <div class="settings-section" id="display-section">
+            <h2>Display & UI Settings</h2>
+            <p class="section-description">Configure theme, currency, and date formatting</p>
+            <form method="post">
+                {% csrf_token %}
+                <input type="hidden" name="section" value="display">
+                {{ display_form.as_p }}
+                <button type="submit" class="btn btn-primary">💾 Save Display Settings</button>
+            </form>
+        </div>
+
+        <!-- System Settings -->
+        <div class="settings-section" id="system-section">
+            <h2>System Configuration</h2>
+            <p class="section-description">Configure backups, data retention, and logging</p>
+            <form method="post">
+                {% csrf_token %}
+                <input type="hidden" name="section" value="system">
+                {{ system_form.as_p }}
+                <button type="submit" class="btn btn-primary">💾 Save System Settings</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+    .admin-settings-container {
+        display: grid;
+        grid-template-columns: 250px 1fr;
+        gap: 20px;
+        margin-top: 20px;
+    }
+
+    .settings-sidebar {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        padding: 10px;
+        height: fit-content;
+        position: sticky;
+        top: 20px;
+    }
+
+    .sidebar-item {
+        width: 100%;
+        padding: 12px 15px;
+        border: none;
+        background: transparent;
+        text-align: left;
+        cursor: pointer;
+        border-radius: 8px;
+        margin-bottom: 5px;
+        font-weight: 500;
+        color: #4a5568;
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .sidebar-item:hover {
+        background: #f7fafc;
+        color: #667eea;
+    }
+
+    .sidebar-item.active {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+    }
+
+    .settings-main {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        padding: 30px;
+    }
+
+    .settings-section {
+        display: none;
+    }
+
+    .settings-section.active {
+        display: block;
+        animation: fadeIn 0.3s ease-in;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .settings-section h2 {
+        margin-bottom: 8px;
+        color: #2d3748;
+    }
+
+    .section-description {
+        color: #718096;
+        margin-bottom: 25px;
+    }
+
+    .settings-section form p {
+        margin-bottom: 20px;
+    }
+
+    .settings-section form label {
+        display: block;
+        font-weight: 500;
+        margin-bottom: 8px;
+        color: #2d3748;
+    }
+
+    .settings-section form input[type="text"],
+    .settings-section form input[type="email"],
+    .settings-section form input[type="number"],
+    .settings-section form select,
+    .settings-section form textarea {
+        width: 100%;
+        max-width: 500px;
+    }
+
+    .settings-section form textarea {
+        min-height: 100px;
+    }
+
+    .settings-section form input[type="checkbox"] {
+        margin-right: 8px;
+    }
+
+    .settings-section .helptext {
+        display: block;
+        font-size: 0.875rem;
+        color: #718096;
+        margin-top: 5px;
+    }
+
+    .btn-primary {
+        margin-top: 20px;
+    }
+
+    @media (max-width: 768px) {
+        .admin-settings-container {
+            grid-template-columns: 1fr;
+        }
+
+        .settings-sidebar {
+            position: static;
+            display: flex;
+            overflow-x: auto;
+            padding: 5px;
+        }
+
+        .sidebar-item {
+            white-space: nowrap;
+            min-width: 120px;
+        }
+    }
+
+    /* ============ DARK MODE STYLES ============ */
+    body.dark-mode .settings-sidebar {
+        background: #2d3748;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    body.dark-mode .sidebar-item {
+        color: #a0aec0;
+    }
+
+    body.dark-mode .sidebar-item:hover {
+        background: #1a202c;
+        color: #b794f4;
+    }
+
+    body.dark-mode .sidebar-item.active {
+        background: linear-gradient(135deg, #7c3aed 0%, #9f7aea 100%);
+        color: white;
+    }
+
+    body.dark-mode .settings-main {
+        background: #2d3748;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    body.dark-mode .settings-section h2 {
+        color: #e2e8f0;
+    }
+
+    body.dark-mode .section-description {
+        color: #a0aec0;
+    }
+
+    body.dark-mode .settings-section form label {
+        color: #e2e8f0;
+    }
+
+    body.dark-mode .settings-section form input[type="text"],
+    body.dark-mode .settings-section form input[type="email"],
+    body.dark-mode .settings-section form input[type="number"],
+    body.dark-mode .settings-section form select,
+    body.dark-mode .settings-section form textarea {
+        background: #1a202c;
+        border-color: #4a5568;
+        color: #e2e8f0;
+    }
+
+    body.dark-mode .settings-section form input:focus,
+    body.dark-mode .settings-section form select:focus,
+    body.dark-mode .settings-section form textarea:focus {
+        background: #374151;
+        border-color: #9f7aea;
+        color: #e2e8f0;
+    }
+
+    body.dark-mode .settings-section form input[type="checkbox"] {
+        background: #1a202c;
+        border-color: #4a5568;
+    }
+
+    body.dark-mode .settings-section .helptext {
+        color: #a0aec0;
+    }
+
+    body.dark-mode .settings-section form p {
+        color: #cbd5e0;
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const sidebarItems = document.querySelectorAll('.sidebar-item');
+        const sections = document.querySelectorAll('.settings-section');
+
+        sidebarItems.forEach(item => {
+            item.addEventListener('click', function () {
+                const targetSection = this.dataset.section;
+
+                // Remove active class from all items and sections
+                sidebarItems.forEach(i => i.classList.remove('active'));
+                sections.forEach(s => s.classList.remove('active'));
+
+                // Add active class to clicked item and corresponding section
+                this.classList.add('active');
+                document.getElementById(targetSection + '-section').classList.add('active');
+            });
+        });
+    });
+</script>
+{% endblock %}

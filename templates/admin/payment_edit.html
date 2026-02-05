@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block title %}Edit Payment - Mess Management{% endblock %}
+{% block content %}
+<div class="page-header">
+    <h1>Edit Payment Record</h1>
+    <a href="{% url 'payment_list' %}" class="btn btn-secondary">← Back</a>
+</div>
+<div class="form-container">
+    <div class="card">
+        <div class="card-body">
+            <form method="post" enctype="multipart/form-data" class="form">
+                {% csrf_token %}
+                {% for field in form %}
+                <div class="form-group">
+                    <label>{{ field.label }}</label>
+                    {{ field }}
+                    {% if field.errors %}<span class="error">{{ field.errors.0 }}</span>{% endif %}
+                </div>
+                {% endfor %}
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Update Payment</button>
+                    <a href="{% url 'payment_list' %}" class="btn btn-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

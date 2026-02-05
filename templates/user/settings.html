@@ -1,0 +1,444 @@
+{% extends 'base.html' %}
+{% block title %}Settings - Mess Management{% endblock %}
+{% block content %}
+<div class="page-header">
+    <h1>⚙️ Settings</h1>
+    <a href="{% url 'dashboard' %}" class="btn btn-secondary">← Back to Dashboard</a>
+</div>
+
+<div class="settings-container">
+    <div class="settings-tabs">
+        <button class="settings-tab active" data-tab="notifications">🔔 Notifications</button>
+        <button class="settings-tab" data-tab="privacy">🔒 Privacy</button>
+        <button class="settings-tab" data-tab="display">🎨 Display</button>
+        <button class="settings-tab" data-tab="payment">💳 Payment</button>
+    </div>
+
+    <div class="settings-content">
+        <!-- Notifications Tab -->
+        <div class="settings-panel active" id="notifications-panel">
+            <h2>Notification Preferences</h2>
+            <p class="text-muted">Choose which email notifications you want to receive</p>
+            <form method="post">
+                {% csrf_token %}
+                <input type="hidden" name="section" value="notifications">
+
+                <div class="form-group">
+                    <div class="form-check">
+                        {{ notification_form.email_payment_reminders }}
+                        <label class="form-check-label"
+                            for="{{ notification_form.email_payment_reminders.id_for_label }}">
+                            Payment Reminders
+                            <small class="text-muted">Get notified before payment due dates</small>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="form-check">
+                        {{ notification_form.email_grocery_updates }}
+                        <label class="form-check-label"
+                            for="{{ notification_form.email_grocery_updates.id_for_label }}">
+                            Grocery Updates
+                            <small class="text-muted">Get notified about new grocery purchases</small>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="form-check">
+                        {{ notification_form.email_monthly_reports }}
+                        <label class="form-check-label"
+                            for="{{ notification_form.email_monthly_reports.id_for_label }}">
+                            Monthly Reports
+                            <small class="text-muted">Receive monthly summary reports via email</small>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="form-check">
+                        {{ notification_form.email_admin_messages }}
+                        <label class="form-check-label" for="{{ notification_form.email_admin_messages.id_for_label }}">
+                            Admin Messages
+                            <small class="text-muted">Get notified when admin sends a message</small>
+                        </label>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary">💾 Save Notification Settings</button>
+            </form>
+        </div>
+
+        <!-- Privacy Tab -->
+        <div class="settings-panel" id="privacy-panel">
+            <h2>Privacy Settings</h2>
+            <p class="text-muted">Control what information is visible to other members</p>
+            <form method="post">
+                {% csrf_token %}
+                <input type="hidden" name="section" value="privacy">
+
+                <div class="form-group">
+                    <div class="form-check">
+                        {{ privacy_form.show_phone_to_members }}
+                        <label class="form-check-label" for="{{ privacy_form.show_phone_to_members.id_for_label }}">
+                            Show Phone Number to Members
+                            <small class="text-muted">Allow other members to see your phone number</small>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="form-check">
+                        {{ privacy_form.show_payment_status }}
+                        <label class="form-check-label" for="{{ privacy_form.show_payment_status.id_for_label }}">
+                            Show Payment Status
+                            <small class="text-muted">Allow others to see if you've paid for the month</small>
+                        </label>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary">💾 Save Privacy Settings</button>
+            </form>
+        </div>
+
+        <!-- Display Tab -->
+        <div class="settings-panel" id="display-panel">
+            <h2>Display Preferences</h2>
+            <p class="text-muted">Customize how information is displayed on your dashboard</p>
+            <form method="post">
+                {% csrf_token %}
+                <input type="hidden" name="section" value="display">
+
+                <div class="form-group">
+                    <label for="{{ display_form.dashboard_default_view.id_for_label }}">
+                        Dashboard Default View
+                    </label>
+                    {{ display_form.dashboard_default_view }}
+                    <small class="text-muted">Choose what time range to show by default</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ display_form.payment_history_months.id_for_label }}">
+                        Payment History (Months)
+                    </label>
+                    {{ display_form.payment_history_months }}
+                    <small class="text-muted">Number of months to show in payment history (1-24)</small>
+                </div>
+
+                <button type="submit" class="btn btn-primary">💾 Save Display Settings</button>
+            </form>
+        </div>
+
+        <!-- Payment Tab -->
+        <div class="settings-panel" id="payment-panel">
+            <h2>Payment Preferences</h2>
+            <p class="text-muted">Manage your payment preferences and reminders</p>
+
+            <!-- Admin UPI Details (Read-only reference) -->
+            <div class="info-card">
+                <h3>💰 Admin UPI Details</h3>
+                <p><strong>UPI ID:</strong> <code>{{ mess_settings.admin_upi_id|default:"Not configured" }}</code></p>
+                {% if mess_settings.upi_qr_code %}
+                <p><strong>QR Code:</strong></p>
+                <img src="{{ mess_settings.upi_qr_code.url }}" alt="UPI QR Code"
+                    style="max-width: 200px; border: 1px solid #ddd; border-radius: 8px;">
+                {% endif %}
+            </div>
+
+            <hr style="margin: 25px 0;">
+
+            <form method="post">
+                {% csrf_token %}
+                <input type="hidden" name="section" value="payment">
+
+                <div class="form-group">
+                    <label for="{{ payment_form.preferred_upi_app.id_for_label }}">
+                        Preferred UPI App
+                    </label>
+                    {{ payment_form.preferred_upi_app }}
+                    <small class="text-muted">Your preferred payment app (GPay, PhonePe, Paytm, etc.)</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ payment_form.payment_reminder_days.id_for_label }}">
+                        Reminder Days Before Due Date
+                    </label>
+                    {{ payment_form.payment_reminder_days }}
+                    <small class="text-muted">Get reminded this many days before payment is due</small>
+                </div>
+
+                <div class="form-group">
+                    <div class="form-check">
+                        {{ payment_form.auto_download_receipt }}
+                        <label class="form-check-label" for="{{ payment_form.auto_download_receipt.id_for_label }}">
+                            Auto-Download Payment Receipt
+                            <small class="text-muted">Automatically download receipt after successful payment</small>
+                        </label>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary">💾 Save Payment Settings</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+    .settings-container {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+    }
+
+    .settings-tabs {
+        display: flex;
+        background: #f8f9fa;
+        border-bottom: 2px solid #e9ecef;
+        padding: 0;
+        overflow-x: auto;
+    }
+
+    .settings-tab {
+        flex: 1;
+        padding: 15px 20px;
+        border: none;
+        background: transparent;
+        cursor: pointer;
+        font-weight: 500;
+        color: #6c757d;
+        transition: all 0.3s ease;
+        border-bottom: 3px solid transparent;
+        white-space: nowrap;
+    }
+
+    .settings-tab:hover {
+        background: rgba(0, 0, 0, 0.05);
+        color: #495057;
+    }
+
+    .settings-tab.active {
+        color: #667eea;
+        border-bottom-color: #667eea;
+        background: white;
+    }
+
+    .settings-content {
+        padding: 30px;
+    }
+
+    .settings-panel {
+        display: none;
+    }
+
+    .settings-panel.active {
+        display: block;
+        animation: fadeIn 0.3s ease-in;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .settings-panel h2 {
+        margin-bottom: 10px;
+        color: #2d3748;
+    }
+
+    .settings-panel .text-muted {
+        display: block;
+        margin-bottom: 25px;
+        color: #718096;
+    }
+
+    .form-group {
+        margin-bottom: 25px;
+    }
+
+    .form-group label {
+        display: block;
+        font-weight: 500;
+        margin-bottom: 8px;
+        color: #2d3748;
+    }
+
+    .form-group small {
+        display: block;
+        margin-top: 5px;
+        color: #718096;
+        font-size: 0.875rem;
+    }
+
+    .form-check {
+        padding-left: 0;
+        margin-bottom: 15px;
+    }
+
+    .form-check-label {
+        display: flex;
+        align-items: flex-start;
+        cursor: pointer;
+        padding-left: 35px;
+        position: relative;
+        color: #2d3748;
+    }
+
+    .form-check-input {
+        position: absolute;
+        left: 0;
+        top: 2px;
+        width: 20px;
+        height: 20px;
+        margin: 0;
+    }
+
+    .btn {
+        margin-top: 10px;
+    }
+
+    .info-card {
+        background: linear-gradient(135deg, #f5f7fa 0%, #e9ecef 100%);
+        border-left: 4px solid #667eea;
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+    }
+
+    .info-card h3 {
+        margin: 0 0 15px 0;
+        color: #2d3748;
+        font-size: 1.1rem;
+    }
+
+    .info-card p {
+        margin: 10px 0;
+        color: #4a5568;
+    }
+
+    .info-card code {
+        background: white;
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-family: monospace;
+        color: #667eea;
+        font-weight: 600;
+    }
+
+    /* ============ DARK MODE STYLES ============ */
+    body.dark-mode .settings-container {
+        background: #2d3748;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    body.dark-mode .settings-tabs {
+        background: #1a202c;
+        border-bottom-color: #4a5568;
+    }
+
+    body.dark-mode .settings-tab {
+        color: #a0aec0;
+    }
+
+    body.dark-mode .settings-tab:hover {
+        background: rgba(255, 255, 255, 0.05);
+        color: #cbd5e0;
+    }
+
+    body.dark-mode .settings-tab.active {
+        color: #9f7aea;
+        border-bottom-color: #9f7aea;
+        background: #2d3748;
+    }
+
+    body.dark-mode .settings-panel h2 {
+        color: #e2e8f0;
+    }
+
+    body.dark-mode .settings-panel .text-muted {
+        color: #a0aec0;
+    }
+
+    body.dark-mode .form-group label {
+        color: #e2e8f0;
+    }
+
+    body.dark-mode .form-group small {
+        color: #a0aec0;
+    }
+
+    body.dark-mode .form-check-label {
+        color: #e2e8f0;
+    }
+
+    body.dark-mode .form-control,
+    body.dark-mode input[type="text"],
+    body.dark-mode input[type="number"],
+    body.dark-mode select,
+    body.dark-mode textarea {
+        background: #1a202c;
+        border-color: #4a5568;
+        color: #e2e8f0;
+    }
+
+    body.dark-mode .form-control:focus,
+    body.dark-mode input:focus,
+    body.dark-mode select:focus,
+    body.dark-mode textarea:focus {
+        background: #2d3748;
+        border-color: #9f7aea;
+        color: #e2e8f0;
+    }
+
+    body.dark-mode .info-card {
+        background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%);
+        border-left-color: #9f7aea;
+    }
+
+    body.dark-mode .info-card h3 {
+        color: #e2e8f0;
+    }
+
+    body.dark-mode .info-card p {
+        color: #cbd5e0;
+    }
+
+    body.dark-mode .info-card code {
+        background: #4a5568;
+        color: #b794f4;
+    }
+
+    body.dark-mode hr {
+        border-color: #4a5568;
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const tabs = document.querySelectorAll('.settings-tab');
+        const panels = document.querySelectorAll('.settings-panel');
+
+        tabs.forEach(tab => {
+            tab.addEventListener('click', function () {
+                const targetTab = this.dataset.tab;
+
+                // Remove active class from all tabs and panels
+                tabs.forEach(t => t.classList.remove('active'));
+                panels.forEach(p => p.classList.remove('active'));
+
+                // Add active class to clicked tab and corresponding panel
+                this.classList.add('active');
+                document.getElementById(targetTab + '-panel').classList.add('active');
+            });
+        });
+    });
+</script>
+{% endblock %}

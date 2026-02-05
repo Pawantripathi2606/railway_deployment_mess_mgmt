@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% block title %}{% if meal_plan %}Edit{% else %}Add{% endif %} Meal Plan - Mess Management{% endblock %}
+{% block content %}
+<div class="page-header">
+    <h1>{% if meal_plan %}Edit{% else %}Add{% endif %} Meal Plan</h1>
+    <a href="{% url 'meal_calendar' %}" class="btn btn-secondary">← Back to Calendar</a>
+</div>
+
+<div class="form-container">
+    <div class="card">
+        <div class="card-body">
+            <form method="post" class="form">
+                {% csrf_token %}
+
+                <div class="form-group">
+                    <label for="id_date">Date *</label>
+                    {{ form.date }}
+                    {% if form.date.errors %}
+                    <span class="error">{{ form.date.errors.0 }}</span>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label for="id_breakfast">Breakfast 🌅</label>
+                    {{ form.breakfast }}
+                    {% if form.breakfast.errors %}
+                    <span class="error">{{ form.breakfast.errors.0 }}</span>
+                    {% endif %}
+                    <small class="form-text">Enter breakfast menu items</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="id_lunch">Lunch 🌞</label>
+                    {{ form.lunch }}
+                    {% if form.lunch.errors %}
+                    <span class="error">{{ form.lunch.errors.0 }}</span>
+                    {% endif %}
+                    <small class="form-text">Enter lunch menu items</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="id_dinner">Dinner 🌙</label>
+                    {{ form.dinner }}
+                    {% if form.dinner.errors %}
+                    <span class="error">{{ form.dinner.errors.0 }}</span>
+                    {% endif %}
+                    <small class="form-text">Enter dinner menu items</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="id_notes">Additional Notes</label>
+                    {{ form.notes }}
+                    {% if form.notes.errors %}
+                    <span class="error">{{ form.notes.errors.0 }}</span>
+                    {% endif %}
+                    <small class="form-text">Any special notes or dietary information</small>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">{% if meal_plan %}Update{% else %}Create{% endif %}
+                        Meal Plan</button>
+                    <a href="{% url 'meal_calendar' %}" class="btn btn-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

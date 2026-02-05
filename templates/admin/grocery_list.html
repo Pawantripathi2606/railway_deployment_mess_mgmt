@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% block title %}Groceries - Mess Management{% endblock %}
+{% block content %}
+<div class="page-header">
+    <h1>Grocery Management</h1>
+    <div>
+        <a href="{% url 'export_groceries_excel' %}?month={{ selected_month }}" class="btn btn-success"
+            style="margin-right: 10px;">📊 Export to Excel</a>
+        <button onclick="window.print()" class="btn btn-secondary print-btn" style="margin-right: 10px;">🖨️
+            Print</button>
+        <a href="{% url 'grocery_create' %}" class="btn btn-primary">+ Add Grocery Item</a>
+    </div>
+</div>
+<div class="card">
+    <div class="card-header">
+        <div class="filter-group">
+            <label>Filter by Month:</label>
+            <select onchange="window.location.href='?month='+this.value" class="form-control">
+                {% for month in months %}
+                <option value="{{ month }}" {% if month == selected_month %}selected{% endif %}>{{ month }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="total-display">Total: ₹{{ total|floatformat:2 }}</div>
+    </div>
+    <div class="card-body">
+        {% if groceries %}
+        <div class="table-responsive">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Item</th>
+                        <th>Category</th>
+                        <th>Quantity</th>
+                        <th>Price</th>
+                        <th>Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in groceries %}
+                    <tr>
+                        <td>{{ item.item_name }}</td>
+                        <td>{{ item.get_category_display }}</td>
+                        <td>{{ item.quantity }}</td>
+                        <td>₹{{ item.price|floatformat:2 }}</td>
+                        <td>{{ item.purchase_date|date:"d M Y" }}</td>
+                        <td class="actions">
+                            <a href="{% url 'grocery_edit' item.id %}" class="btn btn-sm btn-secondary">Edit</a>
+                            <a href="{% url 'grocery_delete' item.id %}" class="btn btn-sm btn-danger">Delete</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}<p class="empty-state">No groceries found.</p>{% endif %}
+    </div>
+</div>
+{% endblock %}

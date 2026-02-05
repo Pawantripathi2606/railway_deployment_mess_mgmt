@@ -1,0 +1,63 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select Role - Mess Management</title>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="{% static 'favicon.png' %}?v=3.0">
+    <link rel="icon" type="image/png" sizes="16x16" href="{% static 'favicon.png' %}?v=3.0">
+    <link rel="shortcut icon" type="image/png" href="{% static 'favicon.png' %}?v=3.0">
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'favicon.png' %}?v=3.0">
+    <link rel="manifest" href="{% static 'site.webmanifest' %}">
+
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body class="landing-page">
+    <div class="role-selection-container">
+        <div class="role-header">
+            <h1 class="brand-title">🍽️ Mess Management System</h1>
+            <p class="brand-subtitle">Transparent. Simple. Efficient.</p>
+        </div>
+
+        <div class="role-cards">
+            <a href="{% url 'admin_login' %}" class="role-card admin-card">
+                <div class="role-icon">👨‍💼</div>
+                <h2>Admin Login</h2>
+                <p>Manage users, payments, expenses and generate reports</p>
+                <div class="card-arrow">→</div>
+            </a>
+
+            <a href="{% url 'account_login' %}" class="role-card user-card">
+                <div class="role-icon">👥</div>
+                <h2>User Login</h2>
+                <p>View mess data, make payments and contact admin</p>
+                <div class="card-arrow">→</div>
+            </a>
+        </div>
+
+        <div class="features">
+            <div class="feature">
+                <span class="feature-icon">✓</span>
+                <span>Transparent Expense Tracking</span>
+            </div>
+            <div class="feature">
+                <span class="feature-icon">✓</span>
+                <span>Easy Payment Management</span>
+            </div>
+            <div class="feature">
+                <span class="feature-icon">✓</span>
+                <span>Real-time Updates</span>
+            </div>
+        </div>
+    </div>
+
+    <script src="{% static 'js/main.js' %}"></script>
+</body>
+
+</html>

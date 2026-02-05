@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% block title %}Messages - Mess Management{% endblock %}
+{% block content %}
+<div class="page-header">
+    <h1>User Messages</h1>
+    <div class="filter-group">
+        <a href="?status=all"
+            class="btn {% if status_filter == 'all' %}btn-primary{% else %}btn-secondary{% endif %}">All</a>
+        <a href="?status=pending"
+            class="btn {% if status_filter == 'pending' %}btn-primary{% else %}btn-secondary{% endif %}">Pending</a>
+        <a href="?status=resolved"
+            class="btn {% if status_filter == 'resolved' %}btn-primary{% else %}btn-secondary{% endif %}">Resolved</a>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        {% if messages %}
+        <div class="messages-list">
+            {% for msg in messages %}
+            <div
+                class="message-item {% if msg.status == 'pending' %}message-pending{% else %}message-resolved{% endif %}">
+                <div class="message-header">
+                    <strong>{{ msg.user.get_full_name }}</strong>
+                    <span class="message-date">📅 {{ msg.created_at|date:"d M Y, h:i A" }}</span>
+                </div>
+                <div class="message-subject"><strong>{{ msg.subject }}</strong></div>
+                <div class="message-body">{{ msg.message }}</div>
+
+                {% if msg.admin_reply %}
+                <div class="admin-reply">
+                    <strong>Admin Reply:</strong>
+                    <p>{{ msg.admin_reply }}</p>
+                    <small class="text-muted">Replied on: {{ msg.replied_at|date:"d M Y, h:i A" }}</small>
+                </div>
+                {% endif %}
+
+                <div class="message-footer">
+                    <span class="badge badge-{{ msg.status }}">{{ msg.get_status_display }}</span>
+                    <div class="message-actions">
+                        <a href="{% url 'message_reply' msg.id %}" class="btn btn-sm btn-info">💬 Reply</a>
+                        {% if msg.status == 'pending' %}
+                        <a href="{% url 'message_resolve' msg.id %}" class="btn btn-sm btn-primary">Mark Resolved</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p class="empty-state">No messages found.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

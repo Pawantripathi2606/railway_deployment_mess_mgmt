@@ -1,0 +1,178 @@
+{% extends 'base.html' %}
+{% load custom_filters %}
+{% block title %}Meal Calendar - Mess Management{% endblock %}
+{% block content %}
+<div class="page-header">
+    <h1>🍽️ Meal Calendar - {{ month_name }} {{ year }}</h1>
+    <a href="{% url 'user_dashboard' %}" class="btn btn-secondary">← Back to Dashboard</a>
+</div>
+
+<div class="calendar-nav">
+    <a href="?month={{ prev_month }}&year={{ prev_year }}" class="btn btn-secondary">← Previous</a>
+    <h2>{{ month_name }} {{ year }}</h2>
+    <a href="?month={{ next_month }}&year={{ next_year }}" class="btn btn-secondary">Next →</a>
+</div>
+
+<div class="meal-calendar">
+    <table class="calendar-table">
+        <thead>
+            <tr>
+                <th>Sunday</th>
+                <th>Monday</th>
+                <th>Tuesday</th>
+                <th>Wednesday</th>
+                <th>Thursday</th>
+                <th>Friday</th>
+                <th>Saturday</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for week in calendar %}
+            <tr>
+                {% for day in week %}
+                <td
+                    class="calendar-day {% if day == 0 %}empty{% elif day == today.day and month == today.month and year == today.year %}today{% endif %}">
+                    {% if day != 0 %}
+                    <div class="day-number">{{ day }}</div>
+                    {% if day in meal_dict %}
+                    <div class="meal-content">
+                        {% with meal=meal_dict|get_item:day %}
+                        {% if meal.breakfast %}
+                        <div class="meal-item">
+                            <strong>🌅 Breakfast:</strong>
+                            <p>{{ meal.breakfast }}</p>
+                        </div>
+                        {% endif %}
+                        {% if meal.lunch %}
+                        <div class="meal-item">
+                            <strong>🌞 Lunch:</strong>
+                            <p>{{ meal.lunch }}</p>
+                        </div>
+                        {% endif %}
+                        {% if meal.dinner %}
+                        <div class="meal-item">
+                            <strong>🌙 Dinner:</strong>
+                            <p>{{ meal.dinner }}</p>
+                        </div>
+                        {% endif %}
+                        {% if meal.notes %}
+                        <div class="meal-notes">
+                            <small>📝 {{ meal.notes }}</small>
+                        </div>
+                        {% endif %}
+                        {% endwith %}
+                    </div>
+                    {% else %}
+                    <div class="no-meal">
+                        <small class="text-muted">No meal plan</small>
+                    </div>
+                    {% endif %}
+                    {% endif %}
+                </td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<style>
+    .calendar-nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin: 20px 0;
+        padding: 15px;
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .meal-calendar {
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .calendar-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .calendar-table th {
+        background: #4CAF50;
+        color: white;
+        padding: 12px;
+        text-align: center;
+        font-weight: 600;
+    }
+
+    .calendar-day {
+        border: 1px solid #ddd;
+        padding: 10px;
+        vertical-align: top;
+        height: 150px;
+        position: relative;
+    }
+
+    .calendar-day.empty {
+        background: #f5f5f5;
+    }
+
+    .calendar-day.today {
+        background: #e8f5e9;
+        border: 2px solid #4CAF50;
+    }
+
+    .day-number {
+        font-weight: bold;
+        font-size: 18px;
+        margin-bottom: 8px;
+        color: #333;
+    }
+
+    .meal-content {
+        font-size: 12px;
+    }
+
+    .meal-item {
+        margin-bottom: 6px;
+        padding: 4px;
+        background: #f9f9f9;
+        border-radius: 4px;
+    }
+
+    .meal-item strong {
+        display: block;
+        font-size: 10px;
+        color: #555;
+        margin-bottom: 2px;
+    }
+
+    .meal-item p {
+        margin: 0;
+        color: #666;
+        font-size: 11px;
+    }
+
+    .meal-notes {
+        margin-top: 6px;
+        padding: 4px;
+        background: #fff3cd;
+        border-radius: 4px;
+    }
+
+    .meal-notes small {
+        color: #856404;
+        font-size: 10px;
+    }
+
+    .no-meal {
+        text-align: center;
+        padding: 30px 0;
+        color: #999;
+    }
+</style>
+
+{% endblock %}

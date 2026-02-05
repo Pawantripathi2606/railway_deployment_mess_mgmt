@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% block title %}Reply to Message - Mess Management{% endblock %}
+{% block content %}
+<div class="page-header">
+    <h1>Reply to Message</h1>
+    <a href="{% url 'admin_messages' %}" class="btn btn-secondary">← Back to Messages</a>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h2>Original Message from {{ message.user.get_full_name }}</h2>
+        <small class="text-muted">Received: {{ message.created_at|date:"d M Y, h:i A" }}</small>
+    </div>
+    <div class="card-body">
+        <div class="message-details">
+            <p><strong>Subject:</strong> {{ message.subject }}</p>
+            <p><strong>Message:</strong></p>
+            <div class="message-text">{{ message.message }}</div>
+        </div>
+    </div>
+</div>
+
+<div class="form-container">
+    <div class="card">
+        <div class="card-header">
+            <h2>Your Reply</h2>
+        </div>
+        <div class="card-body">
+            <form method="post" class="form">
+                {% csrf_token %}
+
+                <div class="form-group">
+                    <label for="id_admin_reply">Reply Message *</label>
+                    {{ form.admin_reply }}
+                    {% if form.admin_reply.errors %}
+                    <span class="error">{{ form.admin_reply.errors.0 }}</span>
+                    {% endif %}
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Send Reply</button>
+                    <a href="{% url 'admin_messages' %}" class="btn btn-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
