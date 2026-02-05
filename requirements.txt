@@ -1,0 +1,19 @@
+Django==5.0.1
+pillow==10.2.0
+reportlab==4.0.9
+python-dateutil==2.8.2
+gunicorn==21.2.0
+whitenoise==6.6.0
+openpyxl==3.1.2
+django-allauth==65.14.0
+requests==2.31.0
+PyJWT==2.8.0
+cryptography==41.0.7
+
+# Production Database Support (MySQL)
+PyMySQL==1.1.0
+dj-database-url==2.1.0
+python-dotenv==1.0.0
+
+# Environment Variables
+python-decouple==3.8
