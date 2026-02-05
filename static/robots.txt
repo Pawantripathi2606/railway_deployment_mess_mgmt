@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /static/favicon.png
+Allow: /static/site.webmanifest
+Disallow: /admin/

@@ -1,0 +1,280 @@
+/* 
+ * Print Styles for Mess Management System
+ * Optimized for A4 paper printing
+ */
+
+@media print {
+
+    /* Reset to light theme for printing */
+    body {
+        background: white !important;
+        color: black !important;
+        font-size: 12pt;
+        line-height: 1.4;
+    }
+
+    /* Hide non-printable elements */
+    nav,
+    .navbar,
+    .nav-menu,
+    .nav-brand,
+    .theme-toggle,
+    .btn-logout,
+    footer,
+    .footer,
+    .messages-container,
+    .btn:not(.print-only),
+    button:not(.print-only),
+    .no-print {
+        display: none !important;
+    }
+
+    /* Page setup */
+    @page {
+        size: A4;
+        margin: 2cm;
+    }
+
+    /* Content container */
+    .container,
+    .main-content {
+        width: 100% !important;
+        max-width: 100% !important;
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+
+    /* Cards and sections */
+    .card {
+        border: 1px solid #ddd !important;
+        box-shadow: none !important;
+        page-break-inside: avoid;
+        margin-bottom: 20px;
+        background: white !important;
+    }
+
+    .card-header {
+        background-color: #f5f5f5 !important;
+        color: black !important;
+        border-bottom: 2px solid #333 !important;
+        padding: 10px !important;
+        font-weight: bold;
+    }
+
+    .card-body {
+        padding: 15px !important;
+        background: white !important;
+    }
+
+    /* Typography */
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        color: black !important;
+        page-break-after: avoid;
+    }
+
+    h1 {
+        font-size: 24pt;
+        margin-bottom: 15px;
+    }
+
+    h2 {
+        font-size: 18pt;
+        margin-bottom: 12px;
+    }
+
+    h3 {
+        font-size: 14pt;
+        margin-bottom: 10px;
+    }
+
+    /* Tables */
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        page-break-inside: auto;
+        background: white !important;
+        color: black !important;
+    }
+
+    table thead {
+        background-color: #e0e0e0 !important;
+        color: black !important;
+    }
+
+    table th,
+    table td {
+        border: 1px solid #999 !important;
+        padding: 8px !important;
+        text-align: left;
+        color: black !important;
+    }
+
+    table tr {
+        page-break-inside: avoid;
+        page-break-after: auto;
+        background: white !important;
+    }
+
+    /* Links */
+    a {
+        color: black !important;
+        text-decoration: none !important;
+    }
+
+    a[href]:after {
+        content: "";
+        /* Don't show URLs */
+    }
+
+    /* Status badges */
+    .status-badge,
+    .badge {
+        border: 1px solid #333 !important;
+        background: white !important;
+        color: black !important;
+        padding: 2px 6px;
+    }
+
+    /* Remove backgrounds and shadows */
+    * {
+        background: white !important;
+        color: black !important;
+        box-shadow: none !important;
+        text-shadow: none !important;
+    }
+
+    /* Preserve specific backgrounds */
+    .card-header,
+    table thead {
+        background-color: #f0f0f0 !important;
+    }
+
+    /* Page breaks */
+    .page-break {
+        page-break-before: always;
+    }
+
+    .page-break-after {
+        page-break-after: always;
+    }
+
+    .avoid-break {
+        page-break-inside: avoid;
+    }
+
+    /* Print header for reports */
+    .print-header {
+        display: block !important;
+        text-align: center;
+        margin-bottom: 20px;
+        border-bottom: 2px solid #333;
+        padding-bottom: 10px;
+    }
+
+    .print-logo {
+        font-size: 20pt;
+        font-weight: bold;
+    }
+
+    .print-date {
+        font-size: 10pt;
+        color: #666 !important;
+    }
+
+    /* Ensure images fit */
+    img {
+        max-width: 100%;
+        page-break-inside: avoid;
+    }
+
+    /* QR codes and payment proofs - hide in print unless specifically needed */
+    .qr-section {
+        display: none !important;
+    }
+
+    /* Show payment info in text format */
+    .upi-id-section {
+        border: 1px solid #333 !important;
+        padding: 10px !important;
+        margin: 10px 0 !important;
+    }
+
+    /* Lists */
+    ul,
+    ol {
+        margin-left: 20px;
+    }
+
+    /* Forms - hide in print */
+    form:not(.print-only),
+    input:not(.print-only),
+    select:not(.print-only),
+    textarea:not(.print-only) {
+        display: none !important;
+    }
+
+    /* Print-specific utilities */
+    .print-only {
+        display: block !important;
+    }
+
+    .print-inline {
+        display: inline !important;
+    }
+
+    /* Alert boxes */
+    .alert {
+        border: 1px solid #333 !important;
+        padding: 10px !important;
+        margin: 10px 0 !important;
+        background: #f9f9f9 !important;
+    }
+
+    /* Dashboard stats */
+    .stat-card {
+        border: 1px solid #999 !important;
+        padding: 10px !important;
+        margin-bottom: 10px !important;
+        display: inline-block !important;
+        width: 30% !important;
+    }
+
+    /* Optimize text for printing */
+    body {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+}
+
+/* Print button styling (visible on screen, hidden in print) */
+@media screen {
+    .print-btn {
+        background: #4CAF50;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        margin: 10px 0;
+        font-size: 14px;
+    }
+
+    .print-btn:hover {
+        background: #45a049;
+    }
+
+    .print-btn:before {
+        content: "🖨️ ";
+    }
+}
+
+@media print {
+    .print-btn {
+        display: none !important;
+    }
+}
